@@ -50,16 +50,18 @@ public final class JavaDirectKafkaWordCount {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     public static void main(String[] args) {
-        if (args.length < 2) {
+/*        if (args.length < 2) {
             System.err.println("Usage: JavaDirectKafkaWordCount <brokers> <topics>\n" + "  <brokers> is a list of one or more Kafka brokers\n"
                                + "  <topics> is a list of one or more kafka topics to consume from\n\n");
             System.exit(1);
         }
 
         String brokers = args[0];
-        String topics = args[1];
+        String topics = args[1];*/
+        String brokers = "localhost:9092";
+        String topics = "test";
 
-        SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount");
+        SparkConf sparkConf = new SparkConf().setAppName("JavaDirectKafkaWordCount").setMaster("local");
         // 创建一个 StreamingContext,每2秒进行一次批处理
         JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, Durations.seconds(2));
 

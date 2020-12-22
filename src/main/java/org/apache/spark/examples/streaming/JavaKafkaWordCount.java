@@ -16,6 +16,7 @@
 
 package org.apache.spark.examples.streaming;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -47,7 +48,7 @@ public final class JavaKafkaWordCount {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     public static void main(String[] args) {
-        if (args.length < 4) {
+       /* if (args.length < 4) {
             System.err.println("Usage: JavaKafkaWordCount <zkQuorum> <group> <topics> <numThreads>");
             System.exit(1);
         }
@@ -57,12 +58,19 @@ public final class JavaKafkaWordCount {
         String group = args[1];
         int numThreads = Integer.parseInt(args[3]);
         Map<String, Integer> topicMap = new HashMap<String, Integer>();
-        String[] topics = args[2].split(",");
+        String[] topics = args[2].split(",");*/
+
+        String zkAddres = "127.0.0.1:2181";
+        String group = "groupA";
+        int numThreads = 2;
+        Map<String, Integer> topicMap = new HashMap<String, Integer>();
+        String[] topics = new String[]{"test"};
+
         for (String topic : topics) {
             topicMap.put(topic, numThreads);
         }
 
-        SparkConf sparkConf = new SparkConf().setAppName("JavaKafkaWordCount");
+        SparkConf sparkConf = new SparkConf().setAppName("JavaKafkaWordCount").setMaster("local");
         // 创建一个 StreamingContext,每2秒进行一次批处理
         JavaStreamingContext jssc = new JavaStreamingContext(sparkConf, new Duration(2000));
 
