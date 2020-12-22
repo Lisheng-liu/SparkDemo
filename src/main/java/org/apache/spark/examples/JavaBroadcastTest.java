@@ -27,21 +27,62 @@ import org.apache.spark.broadcast.Broadcast;
  * @author liulisheng
  * @date : 2016年3月11日
  */
+
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.broadcast.Broadcast;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
 public class JavaBroadcastTest {
     public static void main(String[] args) {
+        SparkConf conf = new SparkConf()
+                .setMaster("local")
+                .setAppName("BroadCast");
+        JavaSparkContext sc = new JavaSparkContext(conf);
+        /*
+         * 使用广播变量，只读变量，每个executor 只保留一份 task 共用， TorrentBroadcast  方式广播
+         * */
+       /* final Broadcast<String> blackname = sc.broadcast("dwj3");
+        List<String> name = Arrays.asList(
+                "dwj1",
+                "dwj2",
+                "dwj3");
+        //String blackName = "dwj3";
+        JavaRDD<String> nameRDD = sc.parallelize(name);
+        JavaRDD<String> namefilter = nameRDD.filter(new Function<String, Boolean>() {
+            @Override
+            public Boolean call(String s) throws Exception {
+                String blacknames = blackname.getValue();
+                return !blacknames.equals(s);
+            }
+        });
+        List<String> lastname = namefilter.collect();
+        for(String str:lastname){
+            System.out.println(str);
+        }*/
+       final Broadcast<String> blackName = sc.broadcast("dwj3");
+       JavaRDD<String> nameRDD = sc.parallelize(Arrays.asList("dwj1","dwj2","dwj3","dwj4"),2);
+       List<String> lastName = nameRDD.filter(new Function<String, Boolean>() {
+           @Override
+           public Boolean call(String v1) throws Exception {
+               return !blackName.getValue().equals(v1);
+           }
+       }).collect();
+       lastName.forEach(new Consumer<String>() {
+           @Override
+           public void accept(String s) {
+               System.out.println(s);
+           }
+       });
 
-        SparkConf sparkConf = new SparkConf().setAppName("JavaBroadcastTest");
-        JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
-        // 设置 "广播变量"
-        Broadcast<int[]> broadcastVar = jsc.broadcast(new int[] { 1, 2, 3 });
 
-        System.out.print("Broadcast value is :");
-        for (int value : broadcastVar.value()) {
-            System.out.print(" " + value);
-        }
-        System.out.println();
 
-        jsc.close();
+
     }
 }

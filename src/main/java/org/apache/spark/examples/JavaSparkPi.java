@@ -37,6 +37,7 @@ public final class JavaSparkPi {
 
     public static void main(String[] args) throws Exception {
         SparkConf sparkConf = new SparkConf().setAppName("JavaSparkPi");
+        sparkConf.setMaster("local");
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
         // slices 对应于 partition 个数

@@ -40,12 +40,16 @@ import scala.Tuple2;
 public class JavaRddTest<P> {
     public static void main(String[] args) {
         SparkConf sparkConf = new SparkConf().setAppName("JavaRddTest");
+        sparkConf.setMaster("local");
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
         JavaRDD<Integer> rdd = jsc.parallelize(Arrays.asList(1, 2, 3, 4, 5));
         List<String> list = new ArrayList<>();
-        list.add("a,b,c,d,e");
-        list.add("1,2,3,4,5");
+//        list.add("a,b,c,d,e");
+//        list.add("1,2,3,4,5");
+
+        list.add("a,b,c,d");
+        list.add("1,2,3,4");
         JavaRDD<String> rddString = jsc.parallelize(list);
 
         List<String> list2 = new ArrayList<>();
@@ -105,7 +109,7 @@ public class JavaRddTest<P> {
     private static void rddUnion(JavaRDD<String> rddString, JavaRDD<String> rddString2) {
         JavaRDD<String> unionRdd = rddString.union(rddString2);
         for (String t : unionRdd.collect()) {
-            System.out.print(" " + t + " ");
+            System.out.println(" " + t + " ");
         }
         System.out.println();
     }
