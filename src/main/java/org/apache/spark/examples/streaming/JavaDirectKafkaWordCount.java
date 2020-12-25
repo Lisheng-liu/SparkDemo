@@ -73,6 +73,7 @@ public final class JavaDirectKafkaWordCount {
         // 通过 brokers 和 topics 创建 direct kafka stream
         JavaPairInputDStream<String, String> messages = KafkaUtils.createDirectStream(jssc, String.class, String.class, StringDecoder.class, StringDecoder.class, kafkaParams,
                                                                                       topicsSet);
+//        jssc.stop();
 
         // 按行获取
         JavaDStream<String> lines = messages.map(new Function<Tuple2<String, String>, String>() {
